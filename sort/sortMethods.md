@@ -38,6 +38,102 @@
 - **堆排序：** 适用于需要快速找到最大值或最小值的场景。
 - **基数排序、桶排序：** 适用于数据分布比较均匀的场景。
 
+# 冒泡排序
+
+```C++
+void bubbleSort(int arr[], int n) {
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                std::swap(arr[j], arr[j + 1]);
+            }
+        }
+    }
+}
+
+int main() {
+    int n = 5;
+    int* arr = new int[n];
+    for (int i = 0; i < n; i++) {
+        std::cin >> arr[i];
+    }
+    bubbleSort(arr, n);
+    for (int i = 0; i < n; i++) {
+        std::cout << arr[i]<<"   ";
+    }
+    delete[]arr;
+}
+```
+
+# 选择排序
+
+```C++
+#include<iostream>
+#include<vector>
+using namespace std;
+void selectSort(int *arr,int len) {
+    for (int i = 0; i < len; i++) {
+        int min = i;
+        for (int j = i+1; j < len; j++) {
+            if (arr[min] > arr[j])min = j;
+        }
+        int tem = arr[min];
+        arr[min] = arr[i];
+        arr[i] = tem;
+    }
+}
+
+int main() {
+    int n = 5;
+    int* arr = new int[n];
+  
+   
+    for (int i = 0; i < n; i++)
+        cin >> arr[i];
+    selectSort(arr, n);
+    for(int i=0;i<n;i++)
+        cout << arr[i]<<"  ";
+    delete[]arr;
+}
+```
+
+# 插入排序
+
+将一个未排序的元素插入到已排序的子数组中的正确位置
+
+```C++
+#include<iostream>
+#include<vector>
+using namespace std;
+
+void insertSort(int *arr,int len) {
+    for (int i = 1; i < len; i++) {
+        int key = arr[i];
+        int j = i - 1;
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = key;
+    }
+}
+
+int main() {
+    int n = 5;
+    int* arr = new int[n];
+  
+   
+    for (int i = 0; i < n; i++)
+        cin >> arr[i];
+    insertSort(arr, n);
+    for(int i=0;i<n;i++)
+        cout << arr[i]<<"  ";
+    delete[]arr;
+}
+```
+
+
+
 # 归并排序
 
 ```C++
@@ -195,31 +291,3 @@ int main() {
     delete[]arr;
 }
 ```
-
-# 冒泡排序
-
-```C++
-void bubbleSort(int arr[], int n) {
-    for (int i = 0; i < n - 1; i++) {
-        for (int j = 0; j < n - i - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                std::swap(arr[j], arr[j + 1]);
-            }
-        }
-    }
-}
-
-int main() {
-    int n = 5;
-    int* arr = new int[n];
-    for (int i = 0; i < n; i++) {
-        std::cin >> arr[i];
-    }
-    bubbleSort(arr, n);
-    for (int i = 0; i < n; i++) {
-        std::cout << arr[i]<<"   ";
-    }
-    delete[]arr;
-}
-```
-
