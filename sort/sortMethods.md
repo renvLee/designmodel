@@ -132,6 +132,43 @@ int main() {
 }
 ```
 
+# 希尔排序
+
+实质就是分组插入排序，该方法又称递减增量排序算法，因DL．Shell于1959年提出而得名。希尔排序是非稳定的排序算法。步长的选择是希尔排序的重要部分。**只要最终步长为1任何步长序列都可以工作**。算法最开始以一定的步长进行排序。然后会继续以一定步长进行排序，最终算法以步长为1进行排序。当步长为1时，算法变为插入排序，这就保证了数据一定会被排序。
+
+![image-20240326172559919](./assets/sortMethods/image-20240326172559919.png)
+
+```C++
+#include<iostream>
+#include<vector>
+using namespace std;
+
+void shellSort(int arr[], int len) {
+    int gap, i, j;
+    int temp;
+    for (gap = len >> 1; gap > 0; gap >>= 1)//右移除以二
+        for (i = gap; i < len; i++) {
+            temp = arr[i];
+            for (j = i - gap; j >= 0 && arr[j] > temp; j -= gap)
+                arr[j + gap] = arr[j];
+            arr[j + gap] = temp;
+        }
+}
+
+int main() {
+    int n = 5;
+    int* arr = new int[n];
+  
+   
+    for (int i = 0; i < n; i++)
+        cin >> arr[i];
+    shellSort(arr, n);
+    for(int i=0;i<n;i++)
+        cout << arr[i]<<"  ";
+    delete[]arr;
+}
+```
+
 
 
 # 归并排序
@@ -205,6 +242,12 @@ int main() {
 
 # 快速排序
 
+该方法的基本思想是：
+
+- 1．先从数列中取出一个数作为基准数。
+- 2．分区过程，将比这个数大的数全放到它的右边，小于或等于它的数全放到它的左边。
+- 3．再对左右区间重复第二步，直到各区间只有一个数。  
+
 ```C++
 
 int partition(int arr[], int low, int high) {
@@ -243,6 +286,50 @@ int main() {
     delete[]arr;
 }
 ```
+
+```C++
+#include<iostream>
+#include<vector>
+using namespace std;
+//快速排序
+void quickSort(int s[], int l, int r)
+{
+    if (l < r)
+    {
+        int i = l, j = r, x = s[l];
+        while (i < j)
+        {
+            while (i < j && s[j] >= x) // 从右向左找第一个小于x的数
+                j--;
+            if (i < j)
+                s[i++] = s[j];
+
+            while (i < j && s[i] < x) // 从左向右找第一个大于等于x的数
+                i++;
+            if (i < j)
+                s[j--] = s[i];
+        }
+        s[i] = x;
+        quickSort(s, l, i - 1); // 递归调用 
+        quickSort(s, i + 1, r);
+    }
+}
+
+int main() {
+    int n = 5;
+    int* arr = new int[n];
+    for (int i = 0; i < n; i++) {
+        std::cin >> arr[i];
+    }
+    quickSort(arr, 0,n-1);
+    for (int i = 0; i < n; i++) {
+        std::cout << arr[i] << "   ";
+    }
+    delete[]arr;
+}
+```
+
+
 
 # 堆排序
 
