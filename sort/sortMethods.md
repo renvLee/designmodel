@@ -173,6 +173,8 @@ int main() {
 
 # 归并排序
 
+归并排序是一种分治的思想，将大问题拆解成为小问题，将一个大的数组先拆分成几个小的数组，然后再一点点的合并。
+
 ```C++
 void merge(int arr[], int l, int m, int r) {
       int n1 = m - l + 1;
@@ -333,6 +335,8 @@ int main() {
 
 # 堆排序
 
+![image-20240327174740894](./assets/sortMethods/image-20240327174740894.png)
+
 ```C++
 void heapify(int arr[], int n, int i) {
     int largest = i;
@@ -378,3 +382,223 @@ int main() {
     delete[]arr;
 }
 ```
+
+# 基数排序
+
+- 按照个位数进行排序。
+- 按照十位数进行排序。
+- 按照百位数进行排序。
+- .....................
+
+排序后，数列就变成了一个有序序列。
+
+![image-20240327170954889](./assets/sortMethods/image-20240327170954889.png)
+
+```C++
+#include<iostream>
+#include<vector>
+using namespace std;
+int  maxbit (int data[], int n) //求数组中最大元素，有多少位
+{
+    int maxData = data[0];      // 最大数
+    // 先求出最大数，再求其位数，实现一点优化。
+    for (int i = 1; i < n; ++i)
+    {
+        if (maxData < data[i])
+            maxData = data[i];
+    }
+    int d = 1;
+    int p = 10;
+    while (maxData >= p)
+    {
+        maxData /= 10;
+        ++d;
+    }
+    return d;
+}
+void radixsort(int data[], int n) //基数排序
+{
+    int d = maxbit(data, n);
+    int* tmp = new int[n];//进行排序的数组
+    int* count = new int[10]; //计数器
+    int i, j, k;
+    int radix = 1;
+    for (i = 1; i <= d; i++) //进行d次排序
+    {
+        for (j = 0; j < 10; j++)
+            count[j] = 0; //每次分配前清空计数器
+        for (j = 0; j < n; j++)
+        {
+            k = (data[j] / radix) % 10; //统计每个桶中的记录数
+            count[k]++;
+        }
+        for (j = 1; j < 10; j++)
+            count[j] = count[j - 1] + count[j]; //将tmp中的位置依次分配给每个桶
+        for (j = n - 1; j >= 0; j--) //将所有桶中记录依次收集到tmp中
+        {	//进行排序
+            k = (data[j] / radix) % 10;
+            tmp[count[k] - 1] = data[j];
+            count[k]--;
+        }
+        for (j = 0; j < n; j++) //将临时数组的内容复制到data中
+            data[j] = tmp[j];
+        radix = radix * 10;
+    }
+    delete[]tmp;
+    delete[]count;
+}
+
+int main() {
+    int n = 5;
+    int* arr = new int[n];
+    for (int i = 0; i < n; i++) {
+        std::cin >> arr[i];
+    }
+    radixsort(arr, n-1);
+    for (int i = 0; i < n; i++) {
+        std::cout << arr[i] << "   ";
+    }
+    delete[]arr;
+}
+```
+
+# 计数排序
+
+计数排序的核心在于将输入的数据值转化为键存储在额外开辟的数组空间中。作为一种线性时间复杂度的排序，计数排序要求输入的数据必须是有确定范围的整数。
+
+![image-20240327173603635](./assets/sortMethods/image-20240327173603635.png)
+
+① 找出待排序的数组中最大和最小的元素
+	② 统计数组中每个值为i的元素出现的次数，存入数组C的第i项
+	③ 对所有的计数累加（从C中的第一个元素开始，每一项和前一项相加）
+	④ 反向填充目标数组：将每个元素i放在新数组的第C(i)项，每放一个元素就将C(i)减去1
+
+```C++
+#include<iostream>
+#include<vector>
+using namespace std;
+
+void countingSsort(int* ini_arr, int n) {
+    int* count_arr = (int*)malloc(sizeof(int) * 100);
+
+    int* sorted_arr = (int*)malloc(sizeof(int) * 100);
+
+    int i, j, k;
+    for (k = 0; k < 100; k++)
+        count_arr[k] = 0;
+    for (i = 0; i < n; i++)
+        count_arr[ini_arr[i]]++;
+    for (k = 1; k < 100; k++)
+        count_arr[k] += count_arr[k - 1];
+    for (j = n; j > 0; j--)
+        sorted_arr[--count_arr[ini_arr[j - 1]]] = ini_arr[j - 1];
+   
+    for (int i = 0; i < n; i++) {
+        ini_arr[i] = sorted_arr[i];
+    }
+    free(count_arr);
+    free(sorted_arr);
+}
+int main() {
+    int n = 5;
+    int* arr = new int[n];
+    for (int i = 0; i < n; i++) {
+        std::cin >> arr[i];
+    }
+    countingSsort(arr, n);
+    for (int i = 0; i < n; i++) {
+        std::cout << arr[i] << "   ";
+    }
+    delete[]arr;
+}
+```
+
+# 桶排序
+
+桶排序是计数排序的升级版。它利用了函数的映射关系，高效与否的关键就在于这个映射函数的确定。为了使桶排序更加高效，我们需要做到这两点：
+
+1. 在额外空间充足的情况下，尽量增大桶的数量
+2. 使用的映射函数能够将输入的 N 个数据均匀的分配到 K 个桶中
+
+![image-20240327174134668](./assets/sortMethods/image-20240327174134668.png)
+
+```C++
+#include<iterator>
+#include<iostream>
+#include<vector>
+using namespace std;
+const int BUCKET_NUM = 10;
+
+struct ListNode {
+    explicit ListNode(int i = 0) :mData(i), mNext(NULL) {}
+    ListNode* mNext;
+    int mData;
+};
+
+ListNode* insert(ListNode* head, int val) {
+    ListNode dummyNode;
+    ListNode* newNode = new ListNode(val);
+    ListNode* pre, * curr;
+    dummyNode.mNext = head;
+    pre = &dummyNode;
+    curr = head;
+    while (NULL != curr && curr->mData <= val) {
+        pre = curr;
+        curr = curr->mNext;
+    }
+    newNode->mNext = curr;
+    pre->mNext = newNode;
+    return dummyNode.mNext;
+}
+
+
+ListNode* Merge(ListNode* head1, ListNode* head2) {
+    ListNode dummyNode;
+    ListNode* dummy = &dummyNode;
+    while (NULL != head1 && NULL != head2) {
+        if (head1->mData <= head2->mData) {
+            dummy->mNext = head1;
+            head1 = head1->mNext;
+        }
+        else {
+            dummy->mNext = head2;
+            head2 = head2->mNext;
+        }
+        dummy = dummy->mNext;
+    }
+    if (NULL != head1) dummy->mNext = head1;
+    if (NULL != head2) dummy->mNext = head2;
+
+    return dummyNode.mNext;
+}
+
+void BucketSort(int arr[], int n) {
+    vector<ListNode*> buckets(BUCKET_NUM, (ListNode*)(0));
+    for (int i = 0; i < n; ++i) {
+        int index = arr[i] / BUCKET_NUM;
+        ListNode* head = buckets.at(index);
+        buckets.at(index) = insert(head, arr[i]);
+    }
+    ListNode* head = buckets.at(0);
+    for (int i = 1; i < BUCKET_NUM; ++i) {
+        head = Merge(head, buckets.at(i));
+    }
+    for (int i = 0; i < n; ++i) {
+        arr[i] = head->mData;
+        head = head->mNext;
+    }
+}
+int main() {
+    int n = 5;
+    int* arr = new int[n];
+    for (int i = 0; i < n; i++) {
+        std::cin >> arr[i];
+    }
+    BucketSort(arr, n);
+    for (int i = 0; i < n; i++) {
+        std::cout << arr[i] << "   ";
+    }
+    delete[]arr;
+}
+```
+
