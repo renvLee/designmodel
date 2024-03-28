@@ -251,7 +251,6 @@ int main() {
 - 3．再对左右区间重复第二步，直到各区间只有一个数。  
 
 ```C++
-
 int partition(int arr[], int low, int high) {
     int pivot = arr[high];
     int i = low - 1;
@@ -367,8 +366,6 @@ void heapSort(int arr[], int n) {
         heapify(arr, i, 0);
     }
 }
-
-
 int main() {
     int n = 5;
     int* arr = new int[n];
