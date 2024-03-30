@@ -7,3 +7,4 @@ int testFacade();
 int testVisitorPattern();
 int testMementoPattern(); 
 int testObserverPattern();
+int testProtoTypeModel();

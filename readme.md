@@ -12,14 +12,17 @@
 
 # 设计模式原则
 
-- 开闭原则
-- 里氏代换原则
-- 依赖倒转原则
-- 接口隔离原则
-- 合成复用原则
-- 迪米特法则
+**面向对象的设计原则**，如SOLID原则，包括：
 
-# 简单工厂模式及应用场景
+- **单一职责原则（SRP）**：一个类应该只有一个引起它变化的原因。
+- **开放封闭原则（OCP）**：软件实体应当对扩展开放，对修改封闭。
+- **里氏替换原则（LSP）**：子类在不改变原有程序的情况下，可以替换其基类。
+- **接口隔离原则（ISP）**：使用多个专门的接口比使用单一的总接口要好。
+- **依赖倒置原则（DIP）**：高层模块不应依赖低层模块，二者都应依赖于抽象；抽象不应依赖于细节，细节应依赖于抽象。
+
+# 创建型模式
+
+## 简单工厂模式
 
 **简单工厂模式主要解决接口选择问题。**
 
@@ -64,6 +67,87 @@ SingleTonlazy* SingleTonlazy::pSingletontest = NULL;
 // Singletonhungry类外部初始化的时候直接创建对象，在main()之前执行
 Singletonhungry* Singletonhungry::pSingletontest = new Singletonhungry;
 ```
+
+## 原型模式
+
+原型模式是一种创建型设计模式，其功能为复制一个运行时的对象，包括对象各个成员当前的值。而代码又能保持独立性。用原型实例指定创建对象的种类，并且通过拷贝这些原型创建新的对象
+
+**主要解决：在运行期建立和删除原型**。
+	**优点：性能提高、避免构造函数的约束**
+
+纯虚函数（特殊的虚函数，又叫做抽象函数），在基类不能对虚函数给出有意义的实现，而把它声明为纯虚函数，它的实现留给基类
+的派生类去完成。
+
+C++语言支持两种多态性：编译时多态性（通过重载函数、去重符重载实现）和运行时多态性（通过虚函数和继承实现）
+
+**拷贝构造函数被调用场景如下：**
+
+1、用已知对象初始化一个正在被创建的对象，调用拷贝构造函数；
+
+2、函数形式参数为对象的时候，实参对象向形参对象传递，调用拷贝构造函数。
+
+3、函数的返回值为对象的时候，当需要获取返回值时，调用拷贝构造函数
+
+```C++
+#include <iostream>
+#include"designmodel.h"
+using namespace std;
+
+class ProtoType {  // 凡是含有纯虚函数的类叫做抽象类
+public:
+	ProtoType(){
+	}
+	~ProtoType() {
+	}
+
+	virtual ProtoType* CloneFunc() = 0;  // 纯虚函数
+};
+
+class ConreteProtoType:public ProtoType
+{
+public:
+	ConreteProtoType(int imember):_member(imember) {
+		cout << "执行ConreteProtoType带参构造函数.\n" << endl;
+	}
+	~ConreteProtoType() {
+		cout << "执行ConreteProtoType析构函数." << endl;
+	}
+
+	// 拷贝构造函数（若有指针成员变量，要进行实现深拷贝）
+	ConreteProtoType(const ConreteProtoType& rhs) {
+		_member = rhs._member;
+		cout << "数据成员_member1：" << _member << endl;
+	}
+
+	ConreteProtoType* CloneFunc() { // 派生类实现
+		cout << "正在处理克隆." << endl;
+		cout << "数据成员_member2：" << _member << endl;
+		return new ConreteProtoType(*this);
+	}
+
+private:
+	int _member;
+
+};
+
+int testProtoTypeModel()
+{
+	cout << "main()函数-->原型模式开始.\n" << endl;
+
+	ConreteProtoType* CloneObjA = new ConreteProtoType(88);
+	ConreteProtoType* CloneObjB = CloneObjA->CloneFunc();
+
+	cout << endl;
+
+	delete CloneObjA;
+	CloneObjA = nullptr;
+	delete CloneObjB;
+	CloneObjB = nullptr;
+	return 0;
+}
+```
+
+
 
 # 结构型模式
 
